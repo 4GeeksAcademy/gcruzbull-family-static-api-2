@@ -2,8 +2,11 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-from flask import Flask, request, jsonify, url_for
-from flask_cors import CORS
+from flask import Flask, request, jsonify, url_for   # La función url_for se usa para generar URLs dinámicamente a partir del nombre de una función de vista (la función que maneja una ruta).
+from flask_cors import CORS               
+# La extensión flask_cors modifica las respuestas HTTP para incluir los encabezados CORS necesarios.
+# Esto permite que tu API Flask pueda ser consumida desde una aplicación frontend que está en otro origen 
+# (por ejemplo, un cliente en React que corre en http://localhost:3000 mientras tu backend está en http://localhost:5000). 
 from utils import APIException, generate_sitemap
 from datastructures import FamilyStructure
 # from models import Person
@@ -11,7 +14,7 @@ from datastructures import FamilyStructure
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
-CORS(app)
+CORS(app)                               # Habilita CORS para todas las rutas
 
 # Create the jackson family object
 jackson_family = FamilyStructure("Jackson")
@@ -30,12 +33,51 @@ def sitemap():
 
 
 @app.route('/members', methods=['GET'])
-def handle_hello():
+def call_all_members():
     # This is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
-    response_body = {"hello": "world",
-                     "family": members}
-    return jsonify(response_body), 200
+    return jsonify(members), 200
+
+
+
+
+
+@app.route('/members/<int:id>', methods=['GET'])
+def obtain_member(id):
+    member = jackson_family.get_member(id)
+    if member:
+        return jsonify(member), 200
+    else:
+        return jsonify({"error": f"The member is not here! Try again!"}), 404
+    
+
+@app.route('/members', methods=['POST'])
+def new_member():
+    body = request.get_json()
+    new_member = jackson_family.add_member(body)
+    return jsonify(new_member), 200
+
+
+@app.route('/members/<int:id>', methods=['DELETE'])
+def delete_one_member(id):
+    result = jackson_family.delete_member(id)
+    if result["done"]:
+        return jsonify(result), 200
+    else:
+        return jsonify({"error": "No se pudo eliminar"}), 404
+
+
+    # deleted = jackson_family.delete_member(id)
+    # if deleted:
+    #     return jsonify({"done": True}), 200
+    # else:
+    #     return jsonify({"error": "Member not found"}), 404
+
+
+
+
+
+
 
 
 
