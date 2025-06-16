@@ -39,9 +39,6 @@ def call_all_members():
     return jsonify(members), 200
 
 
-
-
-
 @app.route('/members/<int:id>', methods=['GET'])
 def obtain_member(id):
     member = jackson_family.get_member(id)
@@ -65,13 +62,6 @@ def delete_one_member(id):
         return jsonify(result), 200
     else:
         return jsonify({"error": "No se pudo eliminar"}), 404
-
-
-    # deleted = jackson_family.delete_member(id)
-    # if deleted:
-    #     return jsonify({"done": True}), 200
-    # else:
-    #     return jsonify({"error": "Member not found"}), 404
 
 
 

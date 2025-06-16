@@ -40,24 +40,16 @@ class FamilyStructure:
         generated_id = self._next_id
         self._next_id += 1
         return generated_id
+    
 
     def add_member(self, member):
         if "id" not in member:
             member["id"] = self._generate_id()
-        member["last_name"] = self.last_name
-        return self._members.append(member)
-        
-
-        # for new_member in self._members:
-        #     if new_member != member:
-        #         self._members.append(member)
-        # return jsonify(self._members)
-
-
-        ## You have to implement this method
-        ## Append the member to the list of _members
-
-        # pass
+        if "last_name" not in member:
+            member["last_name"] = self.last_name
+        self._members.append(member)
+        return member
+    
 
     def delete_member(self, id):
         for index, member in enumerate(self._members):
@@ -65,46 +57,11 @@ class FamilyStructure:
                 self._members.pop(index)
                 return {"done": True}
         return {"done": False}
-
-
-        # for id_delete in range(len(self._members)):
-        #     if id_delete == id:
-        #         return self._members.pop(id)
-        #     else:
-        #         return None
-
-        # for id, member in enumerate(self._members):
-        #     if member['id'] == id:
-        #         return self._members.pop(id)
-        #         break  # para evitar errores de índice
-        #     else:
-        #         return None
-
-        ## You have to implement this method
-        ## Loop the list and delete the member with the given id
-        # pass
+    
 
     def get_member(self, id):
-
         return next((member for member in self._members if member["id"] == id), None)
+    
 
-
-        # for member in self._members:
-        #     if member["id"] == id:
-        #         return member
-        #     else:
-        #         return None
-
-        # member = list(filter(lambda element : element['id'] == id, self._members))
-
-        # if member:
-        #     return member[id]
-        # else:
-        #     return None
-        ## You have to implement this method
-        ## Loop all the members and return the one with the given id
-        # pass
-
-    # This method is done, it returns a list with all the family members
     def get_all_members(self):
         return self._members
